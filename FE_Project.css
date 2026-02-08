@@ -1,0 +1,31 @@
+/*구글 머티리얼 API Import - 아이콘 사용*/
+@import url(https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200);
+
+.dashboard{
+    display: grid;
+    grid-template-rows: 60px 1fr 40px;        /* 헤더: 60px, 메인(반응형), 푸터: 40px*/
+    grid-template-columns: 200px 1fr;         /* 사이드바 200px, 메인(반응형) */
+    min-height: 100vh;
+    gap: 1px;                                 /* 구분선 */
+    background: #ffffff;                       /* 구분선 색상 */
+}
+
+body{
+    font-family: 'Segoe UI', sans-serif
+    background: white;
+    min-height: 100vh;
+}
+
+li {
+    list-style: none;
+}
+
+
+
+.material-symbols-outlined {
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 24
+}

@@ -16,24 +16,14 @@
 
 <body>
     <div class = "dashboard">
+        <!-- 좌측 패널 -->
         <header class = "header"><span class="material-symbols-outlined">insert_chart</span>Task manager</header>
-
         <nav class="sidebar">
             <ul>
-                <li>
-                    <span class="material-symbols-outlined">
-                    home
-                    </span>
-                    inbox
-                </li>
                 <li ><span class="material-symbols-outlined">
                     today
                     </span>
                     Today</li>
-                <li ><span class="material-symbols-outlined">
-                    Upcoming
-                    </span>
-                    Upcoming</li>
                 <li ><span class="material-symbols-outlined">
                     home
                     </span>
@@ -45,13 +35,37 @@
             </ul>
         </nav>
 
-        <footer class = "profile_info">
-            <span class="material-symbols-outlined">
-                account_circle
-            </span>
-            <p>황순재<br>
-            tnswoghkd2638@gmail.com</p>
+        <div class = "side_forder">
+            <p>FORDERS</p>
+            <p>Added_folder</p>
+        </div>
+
+        <footer class = "folder_bar">
+            New forder
         </footer>
+
+        <!-- 본문 -->
+        <main class = "todo_op">
+            <section class = "title">
+                <p>Today`s
+                    <br>
+                    Tasks
+                </p>
+                <time id = "today_date">
+                </time>
+                <section class = "search_bar">
+                    <input type = "text" placeholder="Search tasks..">
+                </section>
+            </section>
+
+            <section class = add_task>
+
+            </section>
+
+
+        </main>
+
+      
 
     </div>
 

@@ -17,50 +17,79 @@
 <body>
     <div class = "dashboard">
         <!-- 좌측 패널 -->
-        <header class = "header"><span class="material-symbols-outlined">insert_chart</span>Task manager</header>
+        <header class = "header"><span class="material-symbols-outlined">insert_chart</span>Task<br>manager</header>
         <nav class="sidebar">
+            <p>Menu</p>
             <ul>
-                <li ><span class="material-symbols-outlined">
+                <li class = "menu" ><span class="material-symbols-outlined">
                     today
                     </span>
-                    Today</li>
-                <li ><span class="material-symbols-outlined">
+                    Today
+                </li>
+                <li class = "menu" ><span class="material-symbols-outlined">
                     home
                     </span>
-                    Completed</li>
-                <li ><span class="material-symbols-outlined">
-                    calendar_today
+                    Completed
+                </li>
+                <li class = "menu" ><span class="material-symbols-outlined">
+                    calendar_month
                     </span>
-                    Calendar</li>
+                    Calendar
+                </li>
+                <li class = "menu" ><span class="material-symbols-outlined">
+                    analytics
+                    </span>
+                    analytics
+                </li>                    
             </ul>
         </nav>
 
         <div class = "side_forder">
             <p>FORDERS</p>
-            <p>Added_folder</p>
+            <p>
+                <span class="material-symbols-outlined">
+                    folder
+                </span>
+                Study
+            </p>
+            <p>
+                <span class="material-symbols-outlined">
+                folder
+                </span>
+                Health
+            </p>
+            <p>
+                <span class="material-symbols-outlined">
+                folder
+                </span>
+                Project
+            </p>            
         </div>
 
         <footer class = "folder_bar">
-            New forder
+            <button>
+                + New forder
+            </button>
         </footer>
 
         <!-- 본문 -->
         <main class = "todo_op">
             <section class = "title">
                 <p>Today`s
-                    <br>
-                    Tasks
+                    tasks
                 </p>
                 <time id = "today_date">
                 </time>
+
                 <section class = "search_bar">
-                    <input type = "text" placeholder="Search tasks..">
+                    <input id = "search_bar_inner" type = "text" placeholder="Search tasks..">
+                    <span class="material-symbols-outlined">
+                    search
+                    </span>
                 </section>
             </section>
 
-            <section class = add_task>
-
-            </section>
+            
 
 
         </main>

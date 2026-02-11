@@ -5,7 +5,7 @@ const formattedDate = today.toLocaleDateString("en-US", {
     month: "long",
     day: "numeric"
 });
-const dateElement = document.getElementById("today_date");
+const dateElement = document.getElementById("today_date"); 
 if (dateElement) dateElement.textContent = formattedDate;
 
 // 2. 데이터 저장소
@@ -85,57 +85,95 @@ taskForm.addEventListener("submit", (e) => {
     importantBtn.classList.remove("active");
 });
 
+// 할 일 완료 토글 함수
+function toggleComplete(id) {
+    const taskIndex = tasks.findIndex(t => t.id === id);
+    if (taskIndex !== -1) {
+        tasks[taskIndex].completed = !tasks[taskIndex].completed; // 상태 반전
+        renderTasks(); // 화면 다시 그리기
+    }
+}
+
 // 6. 화면 출력 함수 (닫기 버튼 없이 클릭만으로 제어)
 // 6. 화면 출력 함수 (삭제 버튼 추가 및 레이아웃 변경)
+// 할 일 완료 토글 함수
+function toggleComplete(id) {
+    const taskIndex = tasks.findIndex(t => t.id === id);
+    if (taskIndex !== -1) {
+        tasks[taskIndex].completed = !tasks[taskIndex].completed; // 상태 반전
+        renderTasks(); // 화면 다시 그리기
+    }
+}
+
+function updateTaskStatus() {
+    const now = new Date();
+    // 로컬 시간 기준 YYYY-MM-DD 생성
+    const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+
+    tasks.forEach(task => {
+        if (task.completed) {
+            task.currentStatus = 'completed';
+        } else if (task.date && task.date < todayStr) {
+            task.currentStatus = 'overdue';
+        } else {
+            task.currentStatus = 'normal';
+        }
+    });
+}
+
 function renderTasks() {
+    updateTaskStatus(); // 상태 갱신 로직 실행
+    const taskListDisplay = document.getElementById("task-list-display");
     taskListDisplay.innerHTML = ""; 
 
     tasks.forEach(task => {
         const card = document.createElement("div");
-        card.className = "task-card";
-        card.style.cursor = "pointer";
-
-        card.addEventListener("click", (e) => {
-            // 삭제 버튼(span)을 직접 클릭한 경우에는 상세 패널이 열리지 않도록 방지
-            if (e.target.closest('.delete-btn')) return;
-
-            const isAlreadySelected = card.classList.contains("selected");
-            document.querySelectorAll(".task-card").forEach(c => c.classList.remove("selected"));
-
-            if (isAlreadySelected) {
-                detailPanel.classList.remove("active");
-            } else {
-                card.classList.add("selected");
-                detailPanel.classList.add("active");
-                showDetail(task);
-            }
-        });
+        card.className = `task-card ${task.currentStatus}`;
+        
+        // 상태별 메인 컬러 (진한 톤으로 설정)
+        const statusTheme = {
+            completed: "#1e8e3e",
+            overdue: "#d93025",
+            normal: "#1a73e8"
+        };
+        const activeColor = statusTheme[task.currentStatus];
 
         card.innerHTML = `
             <div class="task-info">
-                <div class="task-title" style="color: #000;">${task.title}</div>
+                <div class="task-title" style="color: #202124; font-weight: 500; ${task.completed ? 'text-decoration: line-through; color: #70757a;' : ''}">
+                    ${task.title}
+                </div>
                 <div class="task-details" style="display: flex; gap: 12px; margin-top: 6px; align-items: center;">
-                    ${task.date ? `
-                        <div style="display: flex; align-items: center; gap: 4px;">
-                            <span class="material-symbols-outlined" style="font-size: 18px; color: #135bec;">calendar_month</span>
-                            <span style="font-size: 13px; color: #000;">${task.date}</span>
-                        </div>` : ""}
+                    <div style="display: flex; align-items: center; gap: 4px;">
+                        <span class="material-symbols-outlined" style="font-size: 18px; color: ${activeColor};">calendar_month</span>
+                        <span style="font-size: 13px; color: ${activeColor};">${task.date}</span>
+                    </div>
                     ${task.time ? `
-                        <div style="display: flex; align-items: center; gap: 4px;">
-                            <span class="material-symbols-outlined" style="font-size: 18px; color: #fbbc04;">notifications</span>
-                            <span style="font-size: 13px; color: #000;">${task.time}</span>
-                        </div>` : ""}
+                    <div style="display: flex; align-items: center; gap: 4px;">
+                        <span class="material-symbols-outlined" style="font-size: 18px; color: #fbbc04;">notifications</span>
+                        <span style="font-size: 13px; color: #9ea3a;">${task.time}</span>
+                    </div>` : ""}
                     ${task.important ? '<span class="material-symbols-outlined" style="color: #fbbc04; font-size: 18px; font-variation-settings: \'FILL\' 1;">star</span>' : ""}
                 </div>
             </div>
-            <div class="task-status">
-                <span class="material-symbols-outlined delete-btn" 
-                      onclick="deleteTask(${task.id})" 
-                      style="color: #515151; font-size: 20px; transition: color 0.2s;">
+            <div class="task-status" style="display: flex; gap: 10px; align-items: center;">
+                <span class="material-symbols-outlined check-btn" onclick="toggleComplete(${task.id})" 
+                      style="color: ${task.completed ? '#1e8e3e' : '#9ea3a8'}; font-size: 22px; cursor: pointer; font-weight: bold;">
+                    ${task.completed ? 'check_circle' : 'radio_button_unchecked'}
+                </span>
+                <span class="material-symbols-outlined delete-btn" onclick="deleteTask(${task.id})" 
+                      style="color: #5f6368; font-size: 20px; cursor: pointer;">
                     delete
                 </span>
             </div>
         `;
+        
+        card.addEventListener("click", (e) => {
+            if (e.target.closest('.delete-btn') || e.target.closest('.check-btn')) return;
+            document.querySelectorAll(".task-card").forEach(c => c.classList.remove("selected"));
+            card.classList.add("selected");
+            showDetail(task);
+        });
         taskListDisplay.appendChild(card);
     });
 }
@@ -156,57 +194,116 @@ renderTasks();
 
 
 
-
-
 function showDetail(task) {
+    const detailPanel = document.getElementById("detail-panel");
+    const detailContent = document.getElementById("detail-content");
     detailPanel.classList.add("active");
+    
+    const statusColor = task.currentStatus === 'completed' ? "#1e8e3e" : (task.currentStatus === 'overdue' ? "#d93025" : "#70757a");
+    const statusLabel = task.currentStatus === 'completed' ? "Task Completed" : (task.currentStatus === 'overdue' ? "Expired" : "In Progress");
+    const statusIcon = task.currentStatus === 'completed' ? 'check_circle' : (task.currentStatus === 'overdue' ? 'error' : 'radio_button_unchecked');
+
     detailContent.innerHTML = `
         <div style="flex: 1;">
-            <div class="detail-item" style="margin-bottom: 25px;">
-                <label style="display: block; font-size: 12px; color: #70757a; margin-bottom: 5px;">Title</label>
-                <div class="val" style="font-size: 1.2rem; font-weight: 500; color: #202124;">${task.title}</div>
+            <div class="detail-item" style="margin-bottom: 32px;">
+                <label style="display: block; font-size: 15.6px; color: #70757a; margin-bottom: 6px;">Title</label>
+                <input type="text" id="edit-title" value="${task.title}" 
+                    style="font-size: 1.56rem; font-weight: 600; color: #202124; border: none; width: 100%; outline: none; background: transparent; padding: 0;">
             </div>
 
-            <div class="detail-item" style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
-                <span class="material-symbols-outlined" style="color: #135bec;">calendar_month</span>
+            <div class="detail-item" style="display: flex; align-items: center; gap: 15px; margin-bottom: 26px;">
+                <span class="material-symbols-outlined" style="color: #1a73e8; font-size: 31px; cursor: pointer;" 
+                      onclick="document.getElementById('edit-date').showPicker()">calendar_month</span>
                 <div>
-                    <label style="display: block; font-size: 12px; color: #70757a;">Due Date</label>
-                    <div class="val" style="color: #202124;">${task.date}</div>
+                    <label style="display: block; font-size: 15.6px; color: #70757a;">Due Date</label>
+                    <input type="date" id="edit-date" value="${task.date}" 
+                        style="border: none; background: transparent; outline: none; font-family: inherit; color: #202124; font-size: 18.2px;">
                 </div>
             </div>
 
-            <div class="detail-item" style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
-                <span class="material-symbols-outlined" style="color: #fbbc04;">notifications</span>
+            <div class="detail-item" style="display: flex; align-items: center; gap: 15px; margin-bottom: 26px;">
+                <span class="material-symbols-outlined" style="color: #fbbc04; font-size: 31px; cursor: pointer;" 
+                      onclick="document.getElementById('edit-time').showPicker()">notifications</span>
                 <div>
-                    <label style="display: block; font-size: 12px; color: #70757a;">Reminder</label>
-                    <div class="val" style="color: #202124;">${task.time}</div>
+                    <label style="display: block; font-size: 15.6px; color: #70757a;">Reminder</label>
+                    <input type="time" id="edit-time" value="${task.time || ''}" 
+                        style="border: none; background: transparent; outline: none; font-family: inherit; color: #202124; font-size: 18.2px;">
                 </div>
             </div>
 
-            <div class="detail-item" style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
-                <span class="material-symbols-outlined" style="color: ${task.important ? '#fbbc04' : '#70757a'}; font-variation-settings: 'FILL' ${task.important ? 1 : 0};">
-                    star
+            <div class="detail-item" style="display: flex; align-items: center; gap: 15px; margin-bottom: 26px;">
+                <span class="material-symbols-outlined" id="edit-important-icon" 
+                      style="color: #fbbc04; font-size: 31px; cursor: pointer; font-variation-settings: 'FILL' ${task.important ? 1 : 0};"
+                      onclick="toggleStar(this)">star</span>
+                <div>
+                    <label style="display: block; font-size: 15.6px; color: #70757a;">Important</label>
+                    <div id="edit-important-text" style="color: #202124; font-size: 18.2px;">${task.important ? "Important Task" : "Normal Task"}</div>
+                </div>
+            </div>
+
+            <div class="detail-item" style="display: flex; align-items: center; gap: 15px; margin-bottom: 26px;">
+                <span class="material-symbols-outlined" style="color: ${statusColor}; font-size: 31px; font-variation-settings: 'FILL' ${task.completed ? 1 : 0};">
+                    ${statusIcon}
                 </span>
                 <div>
-                    <label style="display: block; font-size: 12px; color: #70757a;">Important</label>
-                    <div class="val" style="color: #202124;">${task.important ? "Important Task" : "Normal Task"}</div>
+                    <label style="display: block; font-size: 15.6px; color: #70757a;">Achievement</label>
+                    <div style="color: ${statusColor}; font-weight: bold; font-size: 18.2px;">
+                        ${statusLabel}
+                    </div>
                 </div>
             </div>
         </div>
 
         <div style="flex: 1; display: flex; flex-direction: column;">
-            <div class="detail-item" style="margin-top: 20px; flex-grow: 1;">
-                <label style="display: block;  font-size: 15.6px; color: #666666; margin-bottom: 8px;">Description</label>
-                <div class="val" style="font-size: 18.2px; color: #515050; line-height: 1.6; background: #e3e0e0; padding: 15px; border-radius: 10px; min-height: 100px;">
-                    ${task.description || "추가 상세 내용이 없습니다."}
-                </div>
+            <div class="detail-item" style="margin-top: 13px; flex-grow: 1;">
+                <label style="display: block; font-size: 18.2px; color: #666666; margin-bottom: 10px;">Description</label>
+                <textarea id="edit-desc" oninput="updateDescription(${task.id}, this.value)" 
+                    style="width: 100%; flex-grow: 1; font-size: 21px; color: #515050; line-height: 1.6; background: #e3e0e0; padding: 18px; border-radius: 12px; border: none; resize: none; font-family: inherit; box-sizing: border-box;"
+                    placeholder="Enter task details here...">${task.description || ""}</textarea>
             </div>
         </div>
 
+        <button onclick="saveTaskEdit(${task.id})" 
+                onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 15px rgba(26, 115, 232, 0.3)';" 
+                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';"
+                style="width: 100%; padding: 18px; background-color: #1a73e8; color: white; border: none; border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 26px; font-size: 20.8px; font-weight: 600; transition: transform 0.2s ease, box-shadow 0.2s ease;">
+            <span class="material-symbols-outlined" style="font-size: 28px;">save</span>
+            <span>Update Task</span>
+        </button>
+
         <button onclick="deleteTask(${task.id})" 
-                style="width: 100%; padding: 15px; background: none; border: 2px solid #fce8e6; color: #d93025; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 30px; font-size: 18px; transition: background 0.2s;">
-            <span class="material-symbols-outlined" style="font-size: 26px;">delete</span>
+                onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 15px rgba(195, 44, 54, 0.3)';" 
+                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';"
+                style="width: 100%; padding: 14px; background: none; border: 2px solid #fce8e6; color: #d93025; border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 13px; font-size: 18.2px;">
+            <span class="material-symbols-outlined" style="font-size: 24px;">delete</span>
             <span>Delete Task</span>
         </button>
     `;
+}
+
+// 3. 별 토글 및 저장 유틸 함수
+function toggleStar(el) {
+    const isFilled = el.style.fontVariationSettings.includes("'FILL' 1");
+    const text = document.getElementById("edit-important-text");
+    if (isFilled) {
+        el.style.fontVariationSettings = "'FILL' 0";
+        text.textContent = "Normal Task";
+    } else {
+        el.style.fontVariationSettings = "'FILL' 1";
+        text.textContent = "Important Task";
+    }
+}
+
+function saveTaskEdit(id) {
+    const task = tasks.find(t => t.id === id);
+    if (!task) return;
+
+    task.title = document.getElementById("edit-title").value;
+    task.date = document.getElementById("edit-date").value;
+    task.time = document.getElementById("edit-time").value;
+    task.important = document.getElementById("edit-important-icon").style.fontVariationSettings.includes("'FILL' 1");
+    task.description = document.getElementById("edit-desc").value;
+
+    renderTasks();
+    alert("Changes saved!");
 }

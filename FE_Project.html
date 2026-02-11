@@ -6,102 +6,134 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Todo list</title>
     <link rel="stylesheet" href="FE_Project.css">
-    <link
-     rel="stylesheet"
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
-    >
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined">
 </head>
 
 
 
 <body>
-    <div class = "dashboard">
+    <div class="dashboard">
         <!-- 좌측 패널 -->
-        <header class = "header"><span class="material-symbols-outlined">insert_chart</span>Task<br>manager</header>
+        <header class="header"><span class="material-symbols-outlined">insert_chart</span>Task<br>manager</header>
         <nav class="sidebar">
             <p>Menu</p>
             <ul>
-                <li class = "menu" ><span class="material-symbols-outlined">
-                    today
+                <li class="menu"><span class="material-symbols-outlined">
+                        today
                     </span>
-                    Today
+                    Tasks
                 </li>
-                <li class = "menu" ><span class="material-symbols-outlined">
-                    home
+                <li class="menu"><span class="material-symbols-outlined">
+                        home
                     </span>
                     Completed
                 </li>
-                <li class = "menu" ><span class="material-symbols-outlined">
-                    calendar_month
+                <li class="menu"><span class="material-symbols-outlined">
+                        calendar_month
                     </span>
                     Calendar
                 </li>
-                <li class = "menu" ><span class="material-symbols-outlined">
-                    analytics
+                <li class="menu"><span class="material-symbols-outlined">
+                        analytics
                     </span>
                     analytics
-                </li>                    
+                </li>
             </ul>
         </nav>
 
-        <div class = "side_forder">
-            <p>FORDERS</p>
-            <p>
-                <span class="material-symbols-outlined">
-                    folder
-                </span>
-                Study
-            </p>
-            <p>
-                <span class="material-symbols-outlined">
-                folder
-                </span>
-                Health
-            </p>
-            <p>
-                <span class="material-symbols-outlined">
-                folder
-                </span>
-                Project
-            </p>            
+        <div class="side_forder">
+            <p>Forders</p>
+            <ul>
+                <li>
+                    <span class="material-symbols-outlined">
+                        folder
+                    </span>
+                    Study
+                </li>
+                <li>
+                    <span class="material-symbols-outlined">
+                        folder
+                    </span>
+                    Health
+                </li>
+                <li>
+                    <span class="material-symbols-outlined">
+                        folder
+                    </span>
+                    Project
+                </li>
+            </ul>
         </div>
 
-        <footer class = "folder_bar">
+        <footer class="folder_bar">
             <button>
                 + New forder
             </button>
         </footer>
 
         <!-- 본문 -->
-        <main class = "todo_op">
-            <section class = "title">
+        <main class="todo_op">
+            <section class="title">
                 <p>Today`s
                     tasks
                 </p>
-                <time id = "today_date">
+                <time id="today_date">
                 </time>
 
-                <section class = "search_bar">
-                    <input id = "search_bar_inner" type = "text" placeholder="Search tasks..">
+                <section class="search_bar">
+                    <input id="search_bar_inner" type="text" placeholder="Search tasks..">
                     <span class="material-symbols-outlined">
-                    search
+                        search
                     </span>
                 </section>
+
+                <form class="task-input">
+                    <!-- 1️⃣ 입력 영역 -->
+                    <div class="input-area">
+                        <textarea id="task-title" placeholder="Add a task..." rows="1" required></textarea>
+                    </div>
+
+                    <!-- 왼쪽 옵션 버튼들 -->
+                    <div class="task-options">
+                        <button type="button" class="icon-btn" id="due-btn">
+                            <span class="material-symbols-outlined">calendar_month</span>
+                        </button>
+
+                        <button type="button" class="icon-btn" id="reminder-btn">
+                            <span class="material-symbols-outlined">notifications</span>
+                        </button>
+
+                        <button type="button" class="icon-btn toggle" id="important-btn">
+                            <span class="material-symbols-outlined">star</span>
+                        </button>
+
+                        <!-- 날짜 및 시간 히든 - 토글 시 오픈 -->
+                        <input type="date" id="due-date" hidden>
+                        <input type="time" id="reminder-time" hidden>
+                    </div>
+
+                    <!-- 오른쪽 제출 버튼 -->
+                    <button type="submit" class="add-btn">
+                        Add Task
+                    </button>
+                </form>
             </section>
 
-            
-
-
+            <!-- task 리스트 -->
+            <section id="task-list-display" class="task-list">
+            </section>
         </main>
 
-      
+        <aside id="detail-panel" class="detail-panel">
+            <div class="detail-header">
+                <h3>Task Details</h3>
+            </div>
+            <div id="detail-content" class="detail-body">
+                <p class="placeholder">리스트를 선택하여 상세 정보를 확인하세요.</p>
+            </div>
+        </aside>
 
-    </div>
-
-
-
-
-        
-    <script src = "FE_Project.js"></script>
+        <script src="FE_Project.js"></script>
 </body>
+
 </html>

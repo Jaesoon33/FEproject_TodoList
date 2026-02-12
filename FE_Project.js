@@ -94,17 +94,8 @@ function toggleComplete(id) {
     }
 }
 
-// 6. 화면 출력 함수 (닫기 버튼 없이 클릭만으로 제어)
-// 6. 화면 출력 함수 (삭제 버튼 추가 및 레이아웃 변경)
-// 할 일 완료 토글 함수
-function toggleComplete(id) {
-    const taskIndex = tasks.findIndex(t => t.id === id);
-    if (taskIndex !== -1) {
-        tasks[taskIndex].completed = !tasks[taskIndex].completed; // 상태 반전
-        renderTasks(); // 화면 다시 그리기
-    }
-}
 
+// 객체를 기준으로 상태값 변경
 function updateTaskStatus() {
     const now = new Date();
     // 로컬 시간 기준 YYYY-MM-DD 생성
@@ -121,6 +112,8 @@ function updateTaskStatus() {
     });
 }
 
+
+
 function renderTasks() {
     updateTaskStatus(); // 상태 갱신 로직 실행
     const taskListDisplay = document.getElementById("task-list-display");
@@ -130,7 +123,9 @@ function renderTasks() {
         const card = document.createElement("div");
         card.className = `task-card ${task.currentStatus}`;
         
-        // 상태별 메인 컬러 (진한 톤으로 설정)
+        // blue - in progress
+        // green - completed
+        // red - expired/overdue
         const statusTheme = {
             completed: "#1e8e3e",
             overdue: "#d93025",
@@ -170,7 +165,9 @@ function renderTasks() {
         
         card.addEventListener("click", (e) => {
             if (e.target.closest('.delete-btn') || e.target.closest('.check-btn')) return;
-            document.querySelectorAll(".task-card").forEach(c => c.classList.remove("selected"));
+            
+            document.querySelectorAll(".task-card")
+            .forEach(c => c.classList.remove("selected"));
             card.classList.add("selected");
             showDetail(task);
         });
@@ -205,7 +202,7 @@ function showDetail(task) {
 
     detailContent.innerHTML = `
         <div style="flex: 1;">
-            <div class="detail-item" style="margin-bottom: 32px;">
+            <div class="detail-item" style="margin-bottom: 32px;">  
                 <label style="display: block; font-size: 15.6px; color: #70757a; margin-bottom: 6px;">Title</label>
                 <input type="text" id="edit-title" value="${task.title}" 
                     style="font-size: 1.56rem; font-weight: 600; color: #202124; border: none; width: 100%; outline: none; background: transparent; padding: 0;">
@@ -281,18 +278,7 @@ function showDetail(task) {
     `;
 }
 
-// 3. 별 토글 및 저장 유틸 함수
-function toggleStar(el) {
-    const isFilled = el.style.fontVariationSettings.includes("'FILL' 1");
-    const text = document.getElementById("edit-important-text");
-    if (isFilled) {
-        el.style.fontVariationSettings = "'FILL' 0";
-        text.textContent = "Normal Task";
-    } else {
-        el.style.fontVariationSettings = "'FILL' 1";
-        text.textContent = "Important Task";
-    }
-}
+
 
 function saveTaskEdit(id) {
     const task = tasks.find(t => t.id === id);
@@ -305,5 +291,5 @@ function saveTaskEdit(id) {
     task.description = document.getElementById("edit-desc").value;
 
     renderTasks();
-    alert("Changes saved!");
+    alert("수정되었습니다.");
 }

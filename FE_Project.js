@@ -1,6 +1,4 @@
-/**
- * 1. 기초 설정 및 데이터 저장소
- */
+// 제목 형식
 let today = new Date();
 const formattedDate = today.toLocaleDateString("en-US", {
     weekday: "long",
@@ -10,7 +8,7 @@ const formattedDate = today.toLocaleDateString("en-US", {
 const dateElement = document.getElementById("today_date"); 
 if (dateElement) dateElement.textContent = formattedDate;
 
-// 현재 상세 패널에 열려있는 태스크의 ID를 저장 (패널 토글용)
+// 현재 상세 패널에 열려있는 태스크의 ID를 저장 
 let currentSelectedTaskId = null;
 
 let tasks = [
@@ -30,9 +28,7 @@ const detailContent = document.getElementById("detail-content");
 const dueBtn = document.getElementById("due-btn");
 const reminderBtn = document.getElementById("reminder-btn");
 
-/**
- * 2. 인터랙션 이벤트 (입력창 관련)
- */
+/* 폼 인풋 값 받기 */
 dueBtn.addEventListener("click", () => dueDateInput.showPicker());
 reminderBtn.addEventListener("click", () => reminderTimeInput.showPicker());
 
@@ -48,9 +44,7 @@ importantBtn.addEventListener("click", () => {
     importantBtn.classList.toggle("active");
 });
 
-/**
- * 3. 메인 기능 (태스크 추가, 완료, 삭제, 상태 업데이트)
- */
+// 제출 시 값 저장 
 taskForm.addEventListener("submit", (e) => {
     e.preventDefault();
     const title = textarea.value.trim();
@@ -96,9 +90,7 @@ function updateTaskStatus() {
     });
 }
 
-/**
- * 4. 렌더링 및 상세 패널 제어
- */
+/* 화면 출력  */
 function renderTasks() {
     updateTaskStatus();
     taskListDisplay.innerHTML = ""; 
@@ -115,29 +107,30 @@ function renderTasks() {
 
         card.innerHTML = `
             <div class="task-info">
-                <div class="task-title" style="color: #202124; font-weight: 500; ${task.completed ? 'text-decoration: line-through; color: #70757a;' : ''}">
+                <div class="task-title" style="color: #202124; font-weight: 750; ${task.completed ? 'text-decoration: line-through; color: #70757a;' : ''}">
                     ${task.title}
                 </div>
                 <div class="task-details" style="display: flex; gap: 12px; margin-top: 6px; align-items: center;">
                     <div style="display: flex; align-items: center; gap: 4px;">
                         <span class="material-symbols-outlined" style="font-size: 18px; color: ${activeColor};">calendar_month</span>
-                        <span style="font-size: 13px; color: ${activeColor};">${task.date}</span>
+                        <span style="font-size: 14px; color: ${activeColor};">${task.date}</span>
                     </div>
                     ${task.time ? `
                     <div style="display: flex; align-items: center; gap: 4px;">
                         <span class="material-symbols-outlined" style="font-size: 18px; color: #fbbc04;">notifications</span>
-                        <span style="font-size: 13px; color: #9ea3a;">${task.time}</span>
+                        <span style="font-size: 14px; color: #9ea3a;">${task.time}</span>
                     </div>` : ""}
                     ${task.important ? '<span class="material-symbols-outlined" style="color: #fbbc04; font-size: 18px; font-variation-settings: \'FILL\' 1;">star</span>' : ""}
                 </div>
             </div>
             <div class="task-status" style="display: flex; gap: 10px; align-items: center;">
-                <span class="material-symbols-outlined check-btn" onclick="event.stopPropagation(); toggleComplete(${task.id})" 
-                      style="color: ${task.completed ? '#1e8e3e' : '#9ea3a8'}; font-size: 22px; cursor: pointer; font-weight: bold;">
+                <span class="material-symbols-outlined check-btn"
+                 onclick="event.stopPropagation(); toggleComplete(${task.id})"
+                      style="color: ${task.completed ? '#1e8e3e' : '#6e767e'}; font-size: 22px; cursor: pointer; font-weight: bold; color: #519765">
                     ${task.completed ? 'check_circle' : 'radio_button_unchecked'}
                 </span>
                 <span class="material-symbols-outlined delete-btn" onclick="event.stopPropagation(); deleteTask(${task.id})" 
-                      style="color: #5f6368; font-size: 20px; cursor: pointer;">
+                      style="color: #a74848; font-size: 20px; cursor: pointer;">
                     delete
                 </span>
             </div>
@@ -149,17 +142,17 @@ function renderTasks() {
 }
 
 function showDetail(task) {
-    //  토글 로직: 이미 열려있는 카드를 다시 누르면 패널을 닫음
+    // 시작 시 닫기 위함
     if (currentSelectedTaskId === task.id) {
         detailPanel.classList.remove("active");
         currentSelectedTaskId = null;
-        renderTasks(); // selected 클래스 제거를 위해 리렌더링
+        renderTasks(); // selected 클래스 제거
         return;
     }
 
     currentSelectedTaskId = task.id;
     detailPanel.classList.add("active");
-    renderTasks(); // selected 클래스 적용을 위해 리렌더링
+    renderTasks(); // selected 클래스 적용을 재 출력
 
     const statusColor = task.currentStatus === 'completed' ? "#1e8e3e" : (task.currentStatus === 'overdue' ? "#d93025" : "#70757a");
     const statusLabel = task.currentStatus === 'completed' ? "Task Completed" : (task.currentStatus === 'overdue' ? "Expired" : "In Progress");
@@ -168,38 +161,38 @@ function showDetail(task) {
     detailContent.innerHTML = `
         <div style="flex: 1;">
             <div class="detail-item" style="margin-bottom: 32px;">  
-                <label style="display: block; font-size: 15.6px; color: #70757a; margin-bottom: 6px;">Title</label>
+                <label style="display: block; font-size: 16px; color: #70757a; margin-bottom: 6px;">Title</label>
                 <input type="text" id="edit-title" value="${task.title}" 
-                    style="font-size: 1.56rem; font-weight: 600; color: #202124; border: none; width: 100%; outline: none; background: transparent; padding: 0;">
+                    style="font-size: 25px; font-weight: 600; color: #202124; border: none; width: 100%; outline: none; background: transparent; padding: 0;">
             </div>
 
             <div class="detail-item" style="display: flex; align-items: center; gap: 15px; margin-bottom: 26px;">
-                <span class="material-symbols-outlined" style="color: #1a73e8; font-size: 31px; cursor: pointer;" 
+                <span class="material-symbols-outlined" style="color: #1a73e8; font-size: 32px; cursor: pointer;" 
                       onclick="document.getElementById('edit-date').showPicker()">calendar_month</span>
                 <div>
-                    <label style="display: block; font-size: 15.6px; color: #70757a;">Due Date</label>
+                    <label style="display: block; font-size: 16px; color: #70757a;">Due Date</label>
                     <input type="date" id="edit-date" value="${task.date}" 
-                        style="border: none; background: transparent; outline: none; font-family: inherit; color: #202124; font-size: 18.2px;">
+                        style="border: none;  outline: none; font-family: inherit; color: #202124; font-size: 18px;">
                 </div>
             </div>
 
             <div class="detail-item" style="display: flex; align-items: center; gap: 15px; margin-bottom: 26px;">
-                <span class="material-symbols-outlined" style="color: #fbbc04; font-size: 31px; cursor: pointer;" 
+                <span class="material-symbols-outlined" style="color: #fbbc04; font-size: 32px; cursor: pointer;" 
                       onclick="document.getElementById('edit-time').showPicker()">notifications</span>
                 <div>
-                    <label style="display: block; font-size: 15.6px; color: #70757a;">Reminder</label>
+                    <label style="display: block; font-size: 16px; color: #70757a;">Reminder</label>
                     <input type="time" id="edit-time" value="${task.time || ''}" 
-                        style="border: none; background: transparent; outline: none; font-family: inherit; color: #202124; font-size: 18.2px;">
+                        style="border: none; outline: none; font-family: inherit; color: #202124; font-size: 18px;">
                 </div>
             </div>
 
             <div class="detail-item" style="display: flex; align-items: center; gap: 15px; margin-bottom: 26px;">
                 <span class="material-symbols-outlined" id="edit-important-icon" 
-                      style="color: #fbbc04; font-size: 31px; cursor: pointer; font-variation-settings: 'FILL' ${task.important ? 1 : 0};"
+                      style="color: #fbbc04; font-size: 32px; cursor: pointer; font-variation-settings: 'FILL' ${task.important ? 1 : 0};"
                       onclick="this.style.fontVariationSettings = this.style.fontVariationSettings.includes('1') ? '\\'FILL\\' 0' : '\\'FILL\\' 1'">star</span>
                 <div>
-                    <label style="display: block; font-size: 15.6px; color: #70757a;">Important</label>
-                    <div style="color: #202124; font-size: 18.2px;">Task Importance Setting</div>
+                    <label style="display: block; font-size: 16px; color: #70757a;">Important</label>
+                    <div style="color: #202124; font-size: 18px;">Task Importance Setting</div>
                 </div>
             </div>
 
@@ -208,7 +201,7 @@ function showDetail(task) {
                     ${statusIcon}
                 </span>
                 <div>
-                    <label style="display: block; font-size: 15.6px; color: #70757a;">Achievement</label>
+                    <label style="display: block; font-size: 16px; color: #70757a;">Achievement</label>
                     <div style="color: ${statusColor}; font-weight: bold; font-size: 18.2px;">${statusLabel}</div>
                 </div>
             </div>
@@ -216,30 +209,32 @@ function showDetail(task) {
 
         <div style="flex: 1; display: flex; flex-direction: column;">
             <div class="detail-item" style="margin-top: 13px; flex-grow: 1;">
-                <label style="display: block; font-size: 18.2px; color: #666666; margin-bottom: 10px;">Description</label>
+                <label style="display: block; font-size: 18px; color: #666666; margin-bottom: 10px;">Description</label>
                 <textarea id="edit-desc" 
-                    style="width: 100%; flex-grow: 1; font-size: 21px; color: #515050; line-height: 1.6; background: #e3e0e0; padding: 18px; border-radius: 12px; border: none; resize: none; font-family: inherit; box-sizing: border-box;"
+                    style="width: 100%; font-size: 21px; color: #515050; line-height: 2.2; background: #e3e0e0; padding: 18px; border-radius: 12px; border: none; resize: none; font-family: inherit; box-sizing: border-box;"
                     placeholder="Enter task details here...">${task.description || ""}</textarea>
             </div>
         </div>
 
-        <button onclick="saveTaskEdit(${task.id})" 
+        <button onclick="updateTaskEdit(${task.id})" 
                 onmouseover="this.style.transform='translateY(-2px)';" 
                 onmouseout="this.style.transform='translateY(0)';"
                 style="width: 100%; padding: 18px; background-color: #1a73e8; color: white; border: none; border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 26px; font-size: 20.8px; font-weight: 600; transition: transform 0.2s ease;">
-            <span class="material-symbols-outlined" style="font-size: 28px;">save</span>
+            <span class="material-symbols-outlined" style="font-size: 28px;">update</span>
             <span>Update Task</span>
         </button>
 
         <button onclick="deleteTask(${task.id})" 
-                style="width: 100%; padding: 14px; background: none; border: 2px solid #fce8e6; color: #d93025; border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 13px; font-size: 18.2px;">
+                onmouseover="this.style.transform='translateY(-2px)';" 
+                onmouseout="this.style.transform='translateY(0)';"
+                style="width: 100%; padding: 14px; background: none; border: 2px solid #fce8e6; color: #ffffff; border-radius: 12px; background: #e94338d0; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 13px; font-size: 18px; transition: transform 0.2s ease;">
             <span class="material-symbols-outlined" style="font-size: 24px;">delete</span>
             <span>Delete Task</span>
         </button>
     `;
 }
 
-function saveTaskEdit(id) {
+function updateTaskEdit(id) {
     const task = tasks.find(t => t.id === id);
     if (!task) return;
 
@@ -247,7 +242,6 @@ function saveTaskEdit(id) {
     task.date = document.getElementById("edit-date").value;
     task.time = document.getElementById("edit-time").value;
     task.description = document.getElementById("edit-desc").value;
-    task.important = document.getElementById("edit-important-icon").style.fontVariationSettings.includes("'FILL' 1");
 
     renderTasks();
     alert("수정되었습니다.");
